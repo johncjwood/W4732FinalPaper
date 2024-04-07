@@ -1,0 +1,299 @@
+% CVPR 2022 Paper Template
+% based on the CVPR template provided by Ming-Ming Cheng (https://github.com/MCG-NKU/CVPR_Template)
+% modified and extended by Stefan Roth (stefan.roth@NOSPAMtu-darmstadt.de)
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage[review]{cvpr}      % To produce the REVIEW version
+%\usepackage{cvpr}              % To produce the CAMERA-READY version
+%\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Include other packages here, before hyperref.
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+
+
+% It is strongly recommended to use hyperref, especially for the review version.
+% hyperref with option pagebackref eases the reviewers' job.
+% Please disable hyperref *only* if you encounter grave issues, e.g. with the
+% file validation for the camera-ready version.
+%
+% If you comment hyperref and then uncomment it, you should delete
+% ReviewTempalte.aux before re-running LaTeX.
+% (Or just hit 'q' on the first LaTeX run, let it finish, and you
+%  should be clear).
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
+
+
+% Support for easy cross-referencing
+\usepackage[capitalize]{cleveref}
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\crefname{table}{Tab.}{Tabs.}
+
+
+%%%%%%%%% PAPER ID  - PLEASE UPDATE
+\def\cvprPaperID{*****} % *** Enter the CVPR Paper ID here
+\def\confName{CVPR}
+\def\confYear{2022}
+
+
+\begin{document}
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{Beyond Lip Reading - Inferring Voice Qualities from Visual Data}
+
+\author{John Wood
+Columbia University
+Institution1 address
+{\tt\small john.wood@columbia.edu}
+\and Jacob Wahbeh
+Columbia University
+First line of institution2 address
+{\tt\small jacob.wahbeh@columbia.edu}
+}
+\maketitle
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for inferring words from video / visual-only data, the reproductions of voice have been lacking many qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these qualities from the visual data.
+\end{abstract}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+\label{sec:intro}
+
+There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpuses, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, rising and falling intensity of speaking voice can be suggestive of the certainty of the speaker to certain facts, or rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. 
+
+%-------------------------------------------------------------------------
+\subsection{Language}
+
+All manuscripts must be in English.
+
+
+%------------------------------------------------------------------------
+\section{Related Work}
+\label{sec:related}
+
+There is a lot of related work across multiple disciplines including prior work involving lip reading automation, emotion detection automation, and voice to image generation, and video to voice generation. 
+
+%-------------------------------------------------------------------------
+
+\subsection{Lip Reading Automation}
+
+Some words here
+
+\subsection{Emotion Detection Automation}
+
+Some words here
+
+\subsection{Voice to Image Generation}
+
+Some words here
+
+\subsection{Video to Voice Generation}
+
+Some words here
+
+\subsection{Existing Video Corpora}
+
+Some words here
+
+%------------------------------------------------------------------------
+\section{Methodology}
+\label{sec:methodology}
+
+Our methodology for performing this research was extensive due to the nature of the problem - specifically, we needed a corpus that would represent both a speaker's baseline audio characteristics (pitch / intensity / harmonics / etc.) as well as their audio characteristics when they deviate from that baseline. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information. To achieve this, we developed our own corpus based on long-form interviews conducted in a semi-consistent environment. The long-form nature of the source datasets would facilitate 1) having enough data for an individual speaker to infer a baseline and 2) provide ample time for the conversation to inspire a diversity of emotions that would cause the speaker to deviate from their baseline speaking qualities. We then collected the necessary metadata from the models and  
+
+%-------------------------------------------------------------------------
+\subsection{Data Collection}
+
+Some words here
+
+\subsection{Data Processing}
+
+Some words here
+
+\subsection{Model Construction}
+
+Some words here
+
+%------------------------------------------------------------------------
+\section{Experimental Results}
+\label{sec:results}
+
+This and that
+
+%-------------------------------------------------------------------------
+\subsection{Experiment Topic 1}
+
+Some words here
+
+%------------------------------------------------------------------------
+\section{Discussion}
+\label{sec:discussion}
+
+Here's where we discuss further
+
+%-------------------------------------------------------------------------
+\subsection{Discussion Topic}
+
+Some words here
+
+%------------------------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+
+Some words here
+
+%-------------------------------------------------------------------------
+\subsection{Concluding point 1}
+
+Some words here
+
+
+
+%-------------------------------------------------------------------------
+
+\subsection{Mathematics}
+
+Please number all of your sections and displayed equations as in these examples:
+\begin{equation}
+  E = m\cdot c^2
+  \label{eq:important}
+\end{equation}
+and
+\begin{equation}
+  v = a\cdot t.
+  \label{eq:also-important}
+\end{equation}
+It is important for readers to be able to refer to any particular equation.
+Just because you did not refer to it in the text does not mean some future reader might not need to refer to it.
+It is cumbersome to have to use circumlocutions like ``the equation second from the top of page 3 column 1''.
+(Note that the ruler will not be present in the final copy, so is not an alternative to equation numbers).
+All authors will benefit from reading Mermin's description of how to write mathematics:
+\url{http://www.pamitc.org/documents/mermin.pdf}.
+
+
+
+\begin{figure}[t]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
+
+   \caption{Example of caption.
+   It is set in Roman so that mathematics (always set in Roman: $B \sin A = A \sin B$) may be included without an ugly clash.}
+   \label{fig:onecol}
+\end{figure}
+
+\subsection{Miscellaneous}
+
+\noindent
+Compare the following:\\
+\begin{tabular}{ll}
+ \verb'$conf_a$' &  $conf_a$ \\
+ \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
+\end{tabular}\\
+See The \TeX book, p165.
+
+% Update the cvpr.cls to do the following automatically.
+% For this citation style, keep multiple citations in numerical (not
+% chronological) order, so prefer \cite{Alpher03,Alpher02,Authors14} to
+% \cite{Alpher02,Alpher03,Authors14}.
+
+
+\begin{figure*}
+  \centering
+  \begin{subfigure}{0.68\linewidth}
+    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
+    \caption{An example of a subfigure.}
+    \label{fig:short-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.28\linewidth}
+    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
+    \caption{Another example of a subfigure.}
+    \label{fig:short-b}
+  \end{subfigure}
+  \caption{Example of a short caption, which should be centered.}
+  \label{fig:short}
+\end{figure*}
+
+
+%-------------------------------------------------------------------------
+\subsection{Cross-references}
+
+For the benefit of author(s) and readers, please use the
+{\small\begin{verbatim}
+  \cref{...}
+\end{verbatim}}  command for cross-referencing to figures, tables, equations, or sections.
+This will automatically insert the appropriate label alongside the cross-reference as in this example:
+\begin{quotation}
+  To see how our method outperforms previous work, please see \cref{fig:onecol} and \cref{tab:example}.
+  It is also possible to refer to multiple targets as once, \eg~to \cref{fig:onecol,fig:short-a}.
+  You may also return to \cref{sec:formatting} or look at \cref{eq:also-important}.
+\end{quotation}
+If you do not wish to abbreviate the label, for example at the beginning of the sentence, you can use the
+{\small\begin{verbatim}
+  \Cref{...}
+\end{verbatim}}
+command. Here is an example:
+\begin{quotation}
+  \Cref{fig:onecol} is also quite important.
+\end{quotation}
+
+
+
+\begin{table}
+  \centering
+  \begin{tabular}{@{}lc@{}}
+    \toprule
+    Method & Frobnability \\
+    \midrule
+    Theirs & Frumpy \\
+    Yours & Frobbly \\
+    Ours & Makes one's heart Frob\\
+    \bottomrule
+  \end{tabular}
+  \caption{Results.   Ours is better.}
+  \label{tab:example}
+\end{table}
+
+%-------------------------------------------------------------------------
+\subsection{Illustrations, graphs, and photographs}
+
+All graphics should be centered.
+In \LaTeX, avoid using the \texttt{center} environment for this purpose, as this adds potentially unwanted whitespace.
+Instead use
+{\small\begin{verbatim}
+  \centering
+\end{verbatim}}
+at the beginning of your figure.
+Please ensure that any point you wish to make is resolvable in a printed copy of the paper.
+Resize fonts in figures to match the font in the body text, and choose line widths that render effectively in print.
+Readers (and reviewers), even of an electronic copy, may choose to print your paper in order to read it.
+You cannot insist that they do otherwise, and therefore must not assume that they can zoom in to see tiny details on a graphic.
+
+When placing figures in \LaTeX, it's almost always best to use \verb+\includegraphics+, and to specify the figure width as a multiple of the line width as in the example below
+{\small\begin{verbatim}
+   \usepackage{graphicx} ...
+   \includegraphics[width=0.8\linewidth]
+                   {myfile.pdf}
+\end{verbatim}
+}
+
+
+%-------------------------------------------------------------------------
+
+
+%%%%%%%%% REFERENCES
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{egbib}
+}
+
+\end{document}
