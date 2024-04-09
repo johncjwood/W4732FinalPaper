@@ -60,19 +60,20 @@ First line of institution2 address
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for inferring words from video / visual-only data, the reproductions of voice have been lacking many qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these qualities from the visual data.
+   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for inferring words from video / visual-only data, the reproductions of voice have been lacking in reproducing qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these qualities from the visual data.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 \label{sec:intro}
 
-There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information. 
+There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for human consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information. 
 
 %-------------------------------------------------------------------------
 \subsection{Motivating Findings}
 
-The finding that motivated our initial interest in this particular is our observations on the 
+The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal have provided a stellar website presenting their work: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
+
 
 
 %------------------------------------------------------------------------
@@ -126,7 +127,9 @@ Some words here
 
 Our methodology for performing this research was extensive due to the nature of the problem - specifically, we needed a corpus that would represent both a speaker's baseline audio characteristics (pitch / intensity / harmonics / etc.) as well as their audio characteristics when they deviate from that baseline. 
 
-To achieve this, we developed our own corpus based on long-form conversations conducted in a semi-consistent environment. The long-form nature of the source datasets would facilitate 1) having enough data for an individual speaker to infer a baseline and 2) provide ample time (and stimulation) for the conversation to inspire a diversity of emotions that would cause the speaker to deviate from their baseline speaking qualities. We then collected the necessary metadata from the models using standard speech analysis tooling and libraries to create the speaker diarization and ultimately the audio metadata. We then 
+To achieve this, we developed our own corpus based on long-form conversations conducted in a semi-consistent environment. The long-form nature of the source datasets would facilitate 1) having enough data for an individual speaker to infer a baseline and 2) provide ample time (and stimulation) for the conversation to inspire a diversity of emotions that would cause the speaker to deviate from their baseline speaking qualities. We then collected the necessary metadata from the models using standard speech analysis tooling and libraries to create the speaker diarization and ultimately the audio metadata. 
+
+We then purposefully avoided a common processing step in lip-reading models (for instance, used by Sahipjohn \etal \cite{RobustL2S} and \textbf{\textit{TODO}})  which is to use a Lip Encoder, i.e. a model which will remove excess visual data and zero in on the lips itself. We purposefully removed this to allow for the capture of other information that may be predictive of these other audio qualities. For instance, the distance between a speaker and the microphone may be conducive to predict intensity of speech. Alternatively, the upward movement of the eyebrows relative to the eyes may be predictive of a raised pitch, as the entirety of the facial expression may express surprise or the onset of a questioning mood.   
 
 %-------------------------------------------------------------------------
 \subsection{Data Collection}
