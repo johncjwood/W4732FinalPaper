@@ -5,8 +5,8 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 %%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
-\usepackage[review]{cvpr}      % To produce the REVIEW version
-%\usepackage{cvpr}              % To produce the CAMERA-READY version
+%\usepackage[review]{cvpr}      % To produce the REVIEW version
+\usepackage{cvpr}              % To produce the CAMERA-READY version
 %\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
 % Include other packages here, before hyperref.
@@ -37,9 +37,9 @@
 
 
 %%%%%%%%% PAPER ID  - PLEASE UPDATE
-\def\cvprPaperID{*****} % *** Enter the CVPR Paper ID here
+\def\cvprPaperID{101} % *** Enter the CVPR Paper ID here
 \def\confName{CVPR}
-\def\confYear{2022}
+\def\confYear{2024}
 
 
 \begin{document}
@@ -47,13 +47,11 @@
 %%%%%%%%% TITLE - PLEASE UPDATE
 \title{Beyond Lip Reading - Inferring Voice Qualities from Visual Data}
 
-\author{John Wood
+\author{John Wood, 
 Columbia University
-Institution1 address
 {\tt\small john.wood@columbia.edu}
-\and Jacob Wahbeh
+\and Jacob Wahbeh,
 Columbia University
-First line of institution2 address
 {\tt\small jacob.wahbeh@columbia.edu}
 }
 \maketitle
@@ -74,8 +72,6 @@ There have been no shortages of papers and processes for distilling spoken words
 
 The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal have provided a stellar website presenting their work: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
 
-
-
 %------------------------------------------------------------------------
 \section{Related Work}
 \label{sec:related}
@@ -84,38 +80,20 @@ There is a lot of related work across multiple disciplines including prior work 
 
 %-------------------------------------------------------------------------
 
-\subsection{Lip Reading Automation}
+\subsection{Auditory and Visual Emotion Detection Automation}
 
-Some words here
-
-\subsection{Emotion Detection Automation}
-
-Some words here
+One of the elements that forms the basis of our hypothesis that vocal traits can be recovered from visual information is the twofold existence of evidence that emotion can be recovered from visual information and that emotion can / does result in changes in vocal qualities versus the baseline. The relevance of both audio and video information to predicting emotion is discussed thoroughly in Zhicheng \etal 2023 \cite{EmotVid2023}, where independently, video and audio are shown to be predictive of emotion. Together, they are shown to be even more efficacious. Reinforcing the vocal quality side of the equation, Saini \etal 2023\cite{EmotPitch2023} discusses the relationship in more detail about how pitch and intensity, amongst other vocal cues, can be fundamental to recovering emotion.
 
 \subsection{Voice to Image Generation}
 
-Some words here
+Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, to judge the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
 
-\subsection{Video to Audio Generation}
+\subsection{Lip Reading Automation}
 
-https://arxiv.org/abs/1910.10997 
-Vision-Infused Deep Audio Inpainting
-
-https://link.springer.com/chapter/10.1007/978-3-030-58621-8_44
-Foley Music: Learning to Generate Music from Videos
+At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. 
 
 \subsection{Video to Voice Generation}
 
-http://openaccess.thecvf.com/content_CVPR_2020/html/Prajwal_Learning_Individual_Speaking_Styles_for_Accurate_Lip_to_Speech_Synthesis_CVPR_2020_paper.html
-Learning Individual Speaking Styles for Accurate Lip to Speech Synthesis 
-
-https://ieeexplore.ieee.org/abstract/document/10205038
-ReVISE: Self-Supervised Speech Resynthesis with Visual Input for Universal and Generalized Speech Regeneration
-
-#This one seems to be the latest w/ the highest quality - doesn't always get the speaker right but is pretty good
-https://neha-sherin.github.io/RobustL2S/
-https://ieeexplore.ieee.org/abstract/document/10317357
-RobustL2S: Speaker-Specific Lip-to-Speech Synthesis exploiting Self-Supervised Representations
 
 \subsection{Existing Video Corpora}
 
@@ -129,7 +107,7 @@ Our methodology for performing this research was extensive due to the nature of 
 
 To achieve this, we developed our own corpus based on long-form conversations conducted in a semi-consistent environment. The long-form nature of the source datasets would facilitate 1) having enough data for an individual speaker to infer a baseline and 2) provide ample time (and stimulation) for the conversation to inspire a diversity of emotions that would cause the speaker to deviate from their baseline speaking qualities. We then collected the necessary metadata from the models using standard speech analysis tooling and libraries to create the speaker diarization and ultimately the audio metadata. 
 
-We then purposefully avoided a common processing step in lip-reading models (for instance, used by Sahipjohn \etal \cite{RobustL2S} and \textbf{\textit{TODO}})  which is to use a Lip Encoder, i.e. a model which will remove excess visual data and zero in on the lips itself. We purposefully removed this to allow for the capture of other information that may be predictive of these other audio qualities. For instance, the distance between a speaker and the microphone may be conducive to predict intensity of speech. Alternatively, the upward movement of the eyebrows relative to the eyes may be predictive of a raised pitch, as the entirety of the facial expression may express surprise or the onset of a questioning mood.   
+We then purposefully avoided a common processing step in lip-reading models (for instance, used by Sahipjohn \etal \cite{RobustL2S} )  which is to use a Lip Encoder, i.e. a model which will remove excess visual data and zero in on the lips itself. We purposefully removed this to allow for the capture of other information that may be predictive of these other audio qualities. For instance, the distance between a speaker and the microphone may be conducive to predict intensity of speech. Alternatively, the upward movement of the eyebrows relative to the eyes may be predictive of a raised pitch, as the entirety of the facial expression may express surprise or the onset of a questioning mood.   
 
 %-------------------------------------------------------------------------
 \subsection{Data Collection}
@@ -181,26 +159,6 @@ Some words here
 
 %-------------------------------------------------------------------------
 
-\subsection{Mathematics}
-
-Please number all of your sections and displayed equations as in these examples:
-\begin{equation}
-  E = m\cdot c^2
-  \label{eq:important}
-\end{equation}
-and
-\begin{equation}
-  v = a\cdot t.
-  \label{eq:also-important}
-\end{equation}
-It is important for readers to be able to refer to any particular equation.
-Just because you did not refer to it in the text does not mean some future reader might not need to refer to it.
-It is cumbersome to have to use circumlocutions like ``the equation second from the top of page 3 column 1''.
-(Note that the ruler will not be present in the final copy, so is not an alternative to equation numbers).
-All authors will benefit from reading Mermin's description of how to write mathematics:
-\url{http://www.pamitc.org/documents/mermin.pdf}.
-
-
 
 \begin{figure}[t]
   \centering
@@ -212,78 +170,6 @@ All authors will benefit from reading Mermin's description of how to write mathe
    \label{fig:onecol}
 \end{figure}
 
-\subsection{Miscellaneous}
-
-\noindent
-Compare the following:\\
-\begin{tabular}{ll}
- \verb'$conf_a$' &  $conf_a$ \\
- \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
-\end{tabular}\\
-See The \TeX book, p165.
-
-% Update the cvpr.cls to do the following automatically.
-% For this citation style, keep multiple citations in numerical (not
-% chronological) order, so prefer \cite{Alpher03,Alpher02,Authors14} to
-% \cite{Alpher02,Alpher03,Authors14}.
-
-
-\begin{figure*}
-  \centering
-  \begin{subfigure}{0.68\linewidth}
-    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-    \caption{An example of a subfigure.}
-    \label{fig:short-a}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.28\linewidth}
-    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-    \caption{Another example of a subfigure.}
-    \label{fig:short-b}
-  \end{subfigure}
-  \caption{Example of a short caption, which should be centered.}
-  \label{fig:short}
-\end{figure*}
-
-
-%-------------------------------------------------------------------------
-\subsection{Cross-references}
-
-For the benefit of author(s) and readers, please use the
-{\small\begin{verbatim}
-  \cref{...}
-\end{verbatim}}  command for cross-referencing to figures, tables, equations, or sections.
-This will automatically insert the appropriate label alongside the cross-reference as in this example:
-\begin{quotation}
-  To see how our method outperforms previous work, please see \cref{fig:onecol} and \cref{tab:example}.
-  It is also possible to refer to multiple targets as once, \eg~to \cref{fig:onecol,fig:short-a}.
-  You may also return to \cref{sec:formatting} or look at \cref{eq:also-important}.
-\end{quotation}
-If you do not wish to abbreviate the label, for example at the beginning of the sentence, you can use the
-{\small\begin{verbatim}
-  \Cref{...}
-\end{verbatim}}
-command. Here is an example:
-\begin{quotation}
-  \Cref{fig:onecol} is also quite important.
-\end{quotation}
-
-
-
-\begin{table}
-  \centering
-  \begin{tabular}{@{}lc@{}}
-    \toprule
-    Method & Frobnability \\
-    \midrule
-    Theirs & Frumpy \\
-    Yours & Frobbly \\
-    Ours & Makes one's heart Frob\\
-    \bottomrule
-  \end{tabular}
-  \caption{Results.   Ours is better.}
-  \label{tab:example}
-\end{table}
 
 %-------------------------------------------------------------------------
 \subsection{Illustrations, graphs, and photographs}

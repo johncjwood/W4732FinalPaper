@@ -17,13 +17,13 @@ To apply it, simply use one of the following commands:
 ```Tex
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
-\usepackage[review]{cvpr}      % To produce the REVIEW version
+%\usepackage[review]{cvpr}      % To produce the REVIEW version
 %\usepackage[rebuttal]{cvpr}    % To produce a REBUTTAL
-%\usepackage{cvpr}              % To produce the CAMERA-READY version
+\usepackage{cvpr}              % To produce the CAMERA-READY version
 
-\def\cvprPaperID{*****} % *** Enter the CVPR Paper ID here
+\def\cvprPaperID{101} % *** Enter the CVPR Paper ID here
 \def\confName{CVPR}
-\def\confYear{2022}
+\def\confYear{2024}
 
 ```
 
