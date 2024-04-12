@@ -70,7 +70,7 @@ There have been no shortages of papers and processes for distilling spoken words
 %-------------------------------------------------------------------------
 \subsection{Motivating Findings}
 
-The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal have provided a stellar website presenting their work: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
+The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal have provided a stellar website presenting their work, which includes examples of the aforementioned phenomenon of acoustic deviances: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
 
 %------------------------------------------------------------------------
 \section{Related Work}
@@ -86,18 +86,19 @@ One of the elements that forms the basis of our hypothesis that vocal traits can
 
 \subsection{Voice to Image Generation}
 
-Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, to judge the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
+Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, we intend to concentrate on judging the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
 
 \subsection{Lip Reading Automation}
 
-At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. 
+At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. Due to the efficacy of existing models and methodologies, we felt confident in not pursuing marginal improvements for this particular problem.
 
 \subsection{Video to Voice Generation}
 
+There have been numerous papers and projects which have excelled at performing both lip reading and voice generation. While we mentioned RobustL2S by Sahipjohn \etal \cite{RobustL2S} earlier, there are other cutting-edge papers pushing the boundaries on the problem  
 
 \subsection{Existing Video Corpora}
 
-Some words here
+Before embarking on establishing our own corpus, we performed a brief survey of existing corpora which could have met our needs. Popular corpora for the task include GRID-4S, TCD-TIMIT-3S, Lip2Wav, and the LRS2, each certainly worth their HDD capacity in gold. However, each has their specific drawbacks for our use cases. Lip2Wav by Prajwal \etal 2020\cite{LipWavCorpus2020}, for instance, is limited to a handful of speakers, of which are lecturing and therefore unlikely to generate emotions besides bouts of enthusiasm for particular topics.  LRS2 by Son Chung \etal 2017\cite{LipCorpus2017}, with over 800 citations and over 90 papers utilizing the dataset, has only short-form utterances and is professionally produced, likely resulting in a consistency of demeanor and other controllable audio qualities.
 
 %------------------------------------------------------------------------
 \section{Methodology}
@@ -120,7 +121,18 @@ Once we had the mp4 files, we extracted the video and audio into separate files.
 
 \subsection{Model Construction}
 
-Some words here
+John will create a picture next week
+Jacob plans on using the 3-D Tensors
+Using B/W vs. RGB
+
+\# 2 Layers of 3D CONV 
+# 3 Layers of 2D CONV 
+# Max pooling after each layer 
+# Batch normalization after each layer 
+# Flatten 
+# 3 Fully connected layers 
+Leaky Relu
+Cross entropy loss
 
 %------------------------------------------------------------------------
 \section{Experimental Results}
