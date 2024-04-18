@@ -86,11 +86,11 @@ One of the elements that forms the basis of our hypothesis that vocal traits can
 
 \subsection{Voice to Image Generation}
 
-Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, we intend to concentrate on judging the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
+Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected physical characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, we intend to concentrate on judging the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
 
 \subsection{Lip Reading Automation}
 
-At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. Due to the efficacy of existing models and methodologies, we felt confident in not pursuing marginal improvements for this particular problem.
+At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. Another approach, taking some inspiration directly from the construction of LLMs, is AV-HuBERT by Shi \etal 2022 \cite{AVHuBert}. The fundamental idea here is that one utilizes a hybrid ResNet and Transformer architecture to succeed on a self-supervised fill-in-the-blank tasks on video, resulting in both useful embeddings as well as success at performing lip reading. Due to the efficacy of existing models and methodologies, we felt confident in not pursuing marginal improvements for this particular problem.
 
 \subsection{Video to Voice Generation}
 
@@ -98,7 +98,7 @@ There have been numerous papers and projects which have excelled at performing b
 
 \subsection{Existing Video Corpora}
 
-Before embarking on establishing our own corpus, we performed a brief survey of existing corpora which could have met our needs. Popular corpora for the task include GRID-4S, TCD-TIMIT-3S, Lip2Wav, and the LRS2, each certainly worth their HDD capacity in gold. However, each has their specific drawbacks for our use cases. Lip2Wav by Prajwal \etal 2020\cite{LipWavCorpus2020}, for instance, is limited to a handful of speakers, of which are lecturing and therefore unlikely to generate emotions besides bouts of enthusiasm for particular topics.  LRS2 by Son Chung \etal 2017\cite{LipCorpus2017}, with over 800 citations and over 90 papers utilizing the dataset, has only short-form utterances and is professionally produced, likely resulting in a consistency of demeanor and other controllable audio qualities.
+Before embarking on establishing our own corpus, we performed a brief survey of existing corpora which could have met our needs. Popular corpora for the task include GRID-4S, TCD-TIMIT-3S, Lip2Wav, LRS2, and more recently, LSR3, each certainly worth their HDD capacity in gold. However, each has their specific drawbacks for our use cases. Lip2Wav by Prajwal \etal 2020\cite{LipWavCorpus2020}, for instance, is limited to a handful of speakers, of which are lecturing and therefore unlikely to generate emotions besides bouts of enthusiasm for particular topics.  LRS2 by Son Chung \etal 2017\cite{LipCorpus2017}, with over 800 citations and over 90 papers utilizing the dataset, has only short-form utterances and is professionally produced, likely resulting in a consistency of demeanor and other controllable audio qualities. LRS3, by Afouras \etal 2018\cite{LSR3} has over 400 hours of TED Talk data from over 5500 speakers, which in theory could support our efforts, supposing some metadata to align speakers across the thousands of smaller clips. However, at the time of writing, the robots.ox.ac.uk site for Lip Reading Datasets did not have LSR3 available for download. 
 
 %------------------------------------------------------------------------
 \section{Methodology}
@@ -121,18 +121,17 @@ Once we had the mp4 files, we extracted the video and audio into separate files.
 
 \subsection{Model Construction}
 
-John will create a picture next week
-Jacob plans on using the 3-D Tensors
-Using B/W vs. RGB
+Our model consisted of 2 sets of 3D convolutions, 2 sets of 2D convolutions, and finally 3 linear layers. Furthermore, each layer featured a post-convolution BatchNorm, LeakyReLu, and MaxPool. We, in particular, sought out the 3D convolutional neural networks, first introduced by Ji \etal 2012 \cite{Ji3DConv}, as we intended to use video data with a temporal dimension and wanted our convolutions to have the opportunity to seek patterns over length, width, and time.  
 
-\# 2 Layers of 3D CONV 
-# 3 Layers of 2D CONV 
-# Max pooling after each layer 
-# Batch normalization after each layer 
-# Flatten 
-# 3 Fully connected layers 
-Leaky Relu
-Cross entropy loss
+
+% 2 Layers of 3D CONV 
+% 3 Layers of 2D CONV 
+% Max pooling after each layer 
+% Batch normalization after each layer 
+% Flatten 
+% 3 Fully connected layers 
+% Leaky Relu
+% Cross entropy loss
 
 %------------------------------------------------------------------------
 \section{Experimental Results}
@@ -168,8 +167,31 @@ Some words here
 Some words here
 
 
-
+%------------------------------------------------------------------------
+\section{Team Member Contributions}
+\label{sec:conclusion}
 %-------------------------------------------------------------------------
+\textbf{{John Wood}}
+\begin{itemize}
+    \item Initial idea to attempt to look into errors in modern video-to-audio methods
+    \item Idea and code to download and develop a novel Joe Rogan-based dataset to allow for more likely collection of baseline audio data (due to 2+ hours of data per speaker)
+    \item Code to extract the WAV / target audio data that we are using as our labels in our model
+    \item Functional survey of code to perform speaker diarization (required 3 iterations until we found Pyannote.Audio)
+    \item A plurality of the writing of the final paper including finding relevant papers to quote,  survey of other popular approaches and tools, enumeration of our methodologies and outcomes
+\end{itemize}
+
+
+\textbf{{Jacob Wahbeh}}
+\begin{itemize}
+    \item Initial research into cutting edge results like RobustL2S which showcased accurate lip-reading accuracy but lacking auditory output
+    \item Code to extract the video-only data from the mp4 dataset to use as inputs into the model
+    \item Code to perform scene-change detection, which was key to preventing Joe Rogan's visual data from making its way into our data set
+    \item Idea and code on what model layers to use and research into why
+    \item Work to modify code to run using the Google GPU credits
+\end{itemize}
+
+
+
 
 
 \begin{figure}[t]
