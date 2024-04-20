@@ -58,25 +58,27 @@ Columbia University
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for inferring words from video / visual-only data, the reproductions of voice have been lacking in reproducing qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these qualities from the visual data.
+   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for recovering a speaker's words from video / visual-only data, the reproductions of voice have been lacking in reproducing qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these quantitatively derived qualities from the visual data, to see which ones can be recovered or not.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 \label{sec:intro}
 
-There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for human consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information. 
+There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for human consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information.
 
 %-------------------------------------------------------------------------
 \subsection{Motivating Findings}
 
-The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal have provided a stellar website presenting their work, which includes examples of the aforementioned phenomenon of acoustic deviances: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
+The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal 2023 \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal 2023 have provided a stellar website presenting their work, which includes examples of the aforementioned phenomenon of acoustic deviances: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
+
+The goal of this paper is to create an experiment to tease out the quantitatively observable elements of speech and see their relative predictability, both independent and in comparison to a baseline prediction about a speaker's median vocal qualities. 
 
 %------------------------------------------------------------------------
 \section{Related Work}
 \label{sec:related}
 
-There is a lot of related work across multiple disciplines including prior work involving lip reading automation, emotion detection automation, and voice to image generation, and video to voice generation. 
+There is a lot of related work across multiple disciplines including prior work involving lip reading automation, emotion detection automation, voice to image generation, and video to voice generation. 
 
 %-------------------------------------------------------------------------
 
@@ -84,9 +86,13 @@ There is a lot of related work across multiple disciplines including prior work 
 
 One of the elements that forms the basis of our hypothesis that vocal traits can be recovered from visual information is the twofold existence of evidence that emotion can be recovered from visual information and that emotion can / does result in changes in vocal qualities versus the baseline. The relevance of both audio and video information to predicting emotion is discussed thoroughly in Zhicheng \etal 2023 \cite{EmotVid2023}, where independently, video and audio are shown to be predictive of emotion. Together, they are shown to be even more efficacious. Reinforcing the vocal quality side of the equation, Saini \etal 2023\cite{EmotPitch2023} discusses the relationship in more detail about how pitch and intensity, amongst other vocal cues, can be fundamental to recovering emotion.
 
+The logical through-line is that there's some function \(f(x)\) which maps pixels to emotion and some function \(g(x)\) which maps emotion to deviations in baseline vocal qualities. Thus, we imagine there is some differentiable function, \(g(f(x))\), which could map pixels to deviations in baseline vocal qualities.
+
 \subsection{Voice to Image Generation}
 
-Speech2Face\cite{Speech2face} by Oh \etal suggests a useful predictive correlation between one's appearance and one's vocal qualities. On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected physical characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, we intend to concentrate on judging the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
+Speech2Face by Oh \etal 2019\cite{Speech2face} suggests a useful predictive correlation between one's appearance and one's vocal qualities. The finding here is that the researchers were able to use a sound file to generate an image of a person's face, and for that generated image to have some vague correspondence to a person's actual face. If this model is producing a function, f(x), we aspire to its' inverse, \(f^{-1} (x)\) to use video to generate sound.
+
+On a philosophical note, we are hesitant to proliferate models and methodologies which (potentially / likely) use individuals' protected physical characteristics to create inferences. It is in this spirit that, while our expectation for our resultant work to find some success in predicting the median speaker qualities based on image / video alone, we intend to concentrate on judging the efficacy of the model on its relative predictions of rising and falling vocal qualities, not on absolute resulting values.
 
 \subsection{Lip Reading Automation}
 
@@ -109,38 +115,59 @@ Our methodology for performing this research was extensive due to the nature of 
 To achieve this, we developed our own corpus based on long-form conversations conducted in a semi-consistent environment. The long-form nature of the source datasets would facilitate 1) having enough data for an individual speaker to infer a baseline and 2) provide ample time (and stimulation) for the conversation to inspire a diversity of emotions that would cause the speaker to deviate from their baseline speaking qualities. We then collected the necessary metadata from the models using standard speech analysis tooling and libraries to create the speaker diarization and ultimately the audio metadata. 
 
 We then purposefully avoided a common processing step in lip-reading models (for instance, used by Sahipjohn \etal \cite{RobustL2S} )  which is to use a Lip Encoder, i.e. a model which will remove excess visual data and zero in on the lips itself. We purposefully removed this to allow for the capture of other information that may be predictive of these other audio qualities. For instance, the distance between a speaker and the microphone may be conducive to predict intensity of speech. Alternatively, the upward movement of the eyebrows relative to the eyes may be predictive of a raised pitch, as the entirety of the facial expression may express surprise or the onset of a questioning mood.   
-
 %-------------------------------------------------------------------------
+
+\begin{figure}[t]
+  \fbox{ 
+   \includegraphics[width=0.9\linewidth,left]{Process Flow.png}
+   }
+   \caption{Data processing pipeline}
+   \label{fig:onecol}
+\end{figure}
+
 \subsection{Data Collection}
 
-As our "dynamic" data set, we chose the "Joe Rogan Experience Podcast", available as MP4 audio / video files on archive.org. We chose this due to the numeracy of the episodes, the diversity of speakers, the length of each episode (with many eclipsing 2 hours), and the dynamism of the host, Joe Rogan. We pulled select episodes from 200 to 600, limited to episodes with 1 guest which did not span multiple episodes, and also removed conversations where the speaker was not visible speaking, as was the case the the John McAfee episode.
+As our "dynamic" data set, we chose the "Joe Rogan Experience Podcast", available as MP4 audio / video files on archive.org. We chose this due to the numeracy of the episodes, the diversity of speakers, the length of each episode (with many eclipsing 2 hours), and the dynamism of the host, Joe Rogan. We pulled select episodes from 200 to 600, limited to episodes with 1 guest which did not span multiple episodes, and also removed conversations where the speaker was not visible speaking, as was the case the the John McAfee episode. 
+
+To note, we are aware that the population of individuals appearing on the JRE podcast, while being inclusive of entertainers, political personalities, and academics (more often than not in the exercise science and health sciences)  from California and Texas, is not generally inclusive of people across different groups / populations / economic strata / cultural backgrounds. However, the time horizon to, at scale, find more ideal long-form datasets unfortunately was not supported. Out goal here, however, was not to provide a tool for general consumption or , but to test the feasibility of extracting speaker qualities from video-only input.
 
 \subsection{Data Processing}
 
 Once we had the mp4 files, we extracted the video and audio into separate files. For the audio files, we performed speaker diarization (i.e. split the audio file into segments by the speaker) using the pyannote.audio library\cite{Bredin23}. We then fed these segmented audio files into a Pratt\cite{Pratt}-based library called parselmouth\cite{Parselmouth}.  Parselmouth is a convenient python-based tool we used to extract the voice qualities we were looking for, in 0.1 second intervals, which would become the basis for the data points our model would attempt to predict. We also accumulated this data to create speaker median values, which we would predict in tandem with the temporally-associated values. Out hope was that even if the model fails to correctly predict the median values, we could see predictions that were correctly above or below the median when relevant. 
+
+For our target labels, we chose pitch, intensity, shimmer, jitter, and harmonics. Pitch, or tone, is the rate of vibrations of a sound. Intensity, or loudness, is the physical magnitude or power of a sound wave. Shimmer is a measure of instability of vocal cord vibrations. Jitter is the .Harmonics, or harmonics to noise ratio, is ,to quote Fernandes \etal 2018\cite{Harmon2018}, the ratio between periodic and non-periodic components of speech sound. To put it in layman's terms, it's the additive noise that your vocal chords might produce due to aging or disease, amongst other factors.
+
+For our video-only source data, we used the moviepy python library to remove the audio, resize the video down to 640x360 resolution, turn this images to greyscale, and to down-sample to 10 frames per second. 
 
 \subsection{Model Construction}
 
 Our model consisted of 2 sets of 3D convolutions, 2 sets of 2D convolutions, and finally 3 linear layers. Furthermore, each layer featured a post-convolution BatchNorm, LeakyReLu, and MaxPool. We, in particular, sought out the 3D convolutional neural networks, first introduced by Ji \etal 2012 \cite{Ji3DConv}, as we intended to use video data with a temporal dimension and wanted our convolutions to have the opportunity to seek patterns over length, width, and time.  
 
 
-% 2 Layers of 3D CONV 
-% 3 Layers of 2D CONV 
-% Max pooling after each layer 
-% Batch normalization after each layer 
-% Flatten 
-% 3 Fully connected layers 
-% Leaky Relu
-% Cross entropy loss
-
 %------------------------------------------------------------------------
 \section{Experimental Results}
 \label{sec:results}
 
-This and that
+We ran 5 different experiments for each of the key audio qualities of voice.
 
 %-------------------------------------------------------------------------
-\subsection{Experiment Topic 1}
+\subsection{Pitch}
+
+Some words here
+
+\subsection{Intensity}
+
+Some words here
+
+\subsection{Jitter}
+
+Some words here
+
+\subsection{Shimmer}
+
+Some words here
+
+\subsection{Harmonics}
 
 Some words here
 
@@ -174,6 +201,7 @@ Some words here
 \textbf{{John Wood}}
 \begin{itemize}
     \item Initial idea to attempt to look into errors in modern video-to-audio methods
+    \item Setup of original repositories on GitHub for both our code as well as our work in \LaTeX 
     \item Idea and code to download and develop a novel Joe Rogan-based dataset to allow for more likely collection of baseline audio data (due to 2+ hours of data per speaker)
     \item Code to extract the WAV / target audio data that we are using as our labels in our model
     \item Functional survey of code to perform speaker diarization (required 3 iterations until we found Pyannote.Audio)
@@ -194,39 +222,8 @@ Some words here
 
 
 
-\begin{figure}[t]
-  \centering
-  \fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
-
-   \caption{Example of caption.
-   It is set in Roman so that mathematics (always set in Roman: $B \sin A = A \sin B$) may be included without an ugly clash.}
-   \label{fig:onecol}
-\end{figure}
 
 
-%-------------------------------------------------------------------------
-\subsection{Illustrations, graphs, and photographs}
-
-All graphics should be centered.
-In \LaTeX, avoid using the \texttt{center} environment for this purpose, as this adds potentially unwanted whitespace.
-Instead use
-{\small\begin{verbatim}
-  \centering
-\end{verbatim}}
-at the beginning of your figure.
-Please ensure that any point you wish to make is resolvable in a printed copy of the paper.
-Resize fonts in figures to match the font in the body text, and choose line widths that render effectively in print.
-Readers (and reviewers), even of an electronic copy, may choose to print your paper in order to read it.
-You cannot insist that they do otherwise, and therefore must not assume that they can zoom in to see tiny details on a graphic.
-
-When placing figures in \LaTeX, it's almost always best to use \verb+\includegraphics+, and to specify the figure width as a multiple of the line width as in the example below
-{\small\begin{verbatim}
-   \usepackage{graphicx} ...
-   \includegraphics[width=0.8\linewidth]
-                   {myfile.pdf}
-\end{verbatim}
-}
 
 
 %-------------------------------------------------------------------------
