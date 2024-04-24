@@ -104,7 +104,7 @@ There have been numerous papers and projects which have excelled at performing b
 
 \subsection{Existing Video Corpora}
 
-Before embarking on establishing our own corpus, we performed a brief survey of existing corpora which could have met our needs. Popular corpora for the task include GRID-4S, TCD-TIMIT-3S, Lip2Wav, LRS2, and more recently, LSR3, each certainly worth their HDD capacity in gold. However, each has their specific drawbacks for our use cases. Lip2Wav by Prajwal \etal 2020\cite{LipWavCorpus2020}, for instance, is limited to a handful of speakers, of which are lecturing and therefore unlikely to generate emotions besides bouts of enthusiasm for particular topics.  LRS2 by Son Chung \etal 2017\cite{LipCorpus2017}, with over 800 citations and over 90 papers utilizing the dataset, has only short-form utterances and is professionally produced, likely resulting in a consistency of demeanor and other controllable audio qualities. LRS3, by Afouras \etal 2018\cite{LSR3} has over 400 hours of TED Talk data from over 5500 speakers, which in theory could support our efforts, supposing some metadata to align speakers across the thousands of smaller clips. However, at the time of writing, the robots.ox.ac.uk site for Lip Reading Datasets did not have LSR3 available for download. 
+Before embarking on establishing our own corpus, we performed a brief survey of existing corpora which could have met our needs. Popular corpora for the task include GRID-4S, TCD-TIMIT-3S, Lip2Wav, LRS2, and more recently, LSR3, each certainly worth their HDD capacity in gold. However, each has their specific drawbacks for our use cases. Lip2Wav by Prajwal \etal 2020\cite{LipWavCorpus2020}, for instance, is limited to a handful of speakers, 5, of which are lecturing and therefore unlikely to generate emotions besides bouts of enthusiasm for particular topics.  LRS2 by Son Chung \etal 2017\cite{LipCorpus2017}, with over 800 citations and over 90 papers utilizing the dataset, has only short-form utterances and is professionally produced, likely resulting in a consistency of demeanor and other controllable audio qualities. LRS3, by Afouras \etal 2018\cite{LSR3} has over 400 hours of TED Talk data from over 5500 speakers, which in theory could support our efforts, supposing some metadata to align speakers across the thousands of smaller clips. However, at the time of writing, the robots.ox.ac.uk site for Lip Reading Datasets did not have LSR3 available for download. 
 
 %------------------------------------------------------------------------
 \section{Methodology}
@@ -129,7 +129,7 @@ We then purposefully avoided a common processing step in lip-reading models (for
 
 As our "dynamic" data set, we chose the "Joe Rogan Experience Podcast", available as MP4 audio / video files on archive.org. We chose this due to the numeracy of the episodes, the diversity of speakers, the length of each episode (with many eclipsing 2 hours), and the dynamism of the host, Joe Rogan. We pulled select episodes from 200 to 600, limited to episodes with 1 guest which did not span multiple episodes, and also removed conversations where the speaker was not visible speaking, as was the case the the John McAfee episode. 
 
-To note, we are aware that the population of individuals appearing on the JRE podcast, while being inclusive of entertainers, political personalities, and academics (more often than not in the exercise science and health sciences)  from California and Texas, is not generally inclusive of people across different groups / populations / economic strata / cultural backgrounds. However, the time horizon to, at scale, find more ideal long-form datasets unfortunately was not supported. Out goal here, however, was not to provide a tool for general consumption or , but to test the feasibility of extracting speaker qualities from video-only input.
+To note, we are aware that the population of individuals appearing on the JRE podcast, while being inclusive of entertainers, political personalities, and academics (more often than not in the exercise science and health sciences)  from California and Texas, is not generally inclusive of people across different groups / populations / economic strata / cultural backgrounds (although there is some representation across some races,  genders, and ages). However, the time horizon to, at scale, find more ideal long-form datasets unfortunately was not supported. Out goal here, though, was not to provide a tool for general consumption or use, but to test the feasibility of extracting speaker qualities from video-only input. To our credit, though, the other long-form dataset that is popular, Lip2Wav\cite{LipWavCorpus2020}, only employs 5 speakers, 3 of whom are white men and 2 which are southeast Asian men.
 
 \subsection{Data Processing}
 
@@ -141,35 +141,20 @@ For our video-only source data, we used the moviepy python library to remove the
 
 \subsection{Model Construction}
 
-Our model consisted of 2 sets of 3D convolutions, 2 sets of 2D convolutions, and finally 3 linear layers. Furthermore, each layer featured a post-convolution BatchNorm, LeakyReLu, and MaxPool. We, in particular, sought out the 3D convolutional neural networks, first introduced by Ji \etal 2012 \cite{Ji3DConv}, as we intended to use video data with a temporal dimension and wanted our convolutions to have the opportunity to seek patterns over length, width, and time.  
+We created a plurality of different model architectures, with our original model consisting of 3 sets of 3D convolutions, and 3 linear layers. Furthermore, each convolutional layer featured a post-convolution BatchNorm, LeakyReLu, and MaxPool. We, in particular, sought out the 3D convolutional neural networks, first introduced by Ji \etal 2012 \cite{Ji3DConv}, as we intended to use video data with a temporal dimension and wanted our convolutions to have the opportunity to seek patterns over length, width, and time.  
 
+However, as our model training continuously converged onto producing a constant output irrelevant of the input video frames, we tried a series of changes including tweaking the hyper-parameters, changing the activation functions,  reducing layers, scaling the inputs and outputs, and even removing convolutional layers altogether and using stacks of linear layers. 
 
 %------------------------------------------------------------------------
 \section{Experimental Results}
 \label{sec:results}
-
-We ran 5 different experiments for each of the key audio qualities of voice.
-
 %-------------------------------------------------------------------------
-\subsection{Pitch}
 
-Some words here
+We ran 5 different experiments for each of the key audio qualities of voice. Furthermore, we ran and re-ran the pitch experiment with multiple variations of the model (described earlier) in an attempt to potentially get any predictability out of the model. Unfortunately, in all cases, the model outputs converged towards the mean value for the population of speakers. This was suggestive to us of the input video data being insufficiently predictive, given that the Bayes Optimal Classifier will consistently predict the mean of a dataset, i.e. the expected value of the prior probability times the values, if the input data i.e. the probability of event B is independent of the probability of A.
 
-\subsection{Intensity}
+This was a highly surprising result for us. At the very least, we expected that there would be some, potentially unfortunate but viable route that the model might take to discriminate between our video input to develop its outputs. For instance, one (unfortunate but biologically sound) methodology to create two potential internal representations to then use in predictions for pitch might be for the model to discern male from female speakers. On average, male speakers have pitches between 85 to 155Hz, whereas female speakers have pitches between 165 to 255Hz\cite{Fitch1970}. In theory, if the model were to learn to differentiate males from females on the podcast, then it might be able to make a differentiated prediction.
 
-Some words here
-
-\subsection{Jitter}
-
-Some words here
-
-\subsection{Shimmer}
-
-Some words here
-
-\subsection{Harmonics}
-
-Some words here
+In contrast, we will admit that we were not extremely confident that we would find a pattern for vocal intensity, so the lack of a performing model is not too surprising. This is because post-processing specifically targeting normalizing the intensity of sound from a speaker, both buffing their quiet communications and softening their louder moments (for both listener comfort and ear drum protection) is fairly common and, on some platforms, performed automatically / as a matter of policy. 
 
 %------------------------------------------------------------------------
 \section{Discussion}
@@ -212,10 +197,11 @@ Some words here
 \textbf{{Jacob Wahbeh}}
 \begin{itemize}
     \item Initial research into cutting edge results like RobustL2S which showcased accurate lip-reading accuracy but lacking auditory output
-    \item Code to extract the video-only data from the mp4 dataset to use as inputs into the model
+    \item Video Pre-processing code consisting of extracting 4 second clips of the guest speaker talking
     \item Code to perform scene-change detection, which was key to preventing Joe Rogan's visual data from making its way into our data set
+    \item Creating Training and Test Dataset and Data loader classes in PyTorch
     \item Idea and code on what model layers to use and research into why
-    \item Work to modify code to run using the Google GPU credits
+    \item Training all 5 models across multiple epochs and fine tuning the architecture
 \end{itemize}
 
 
