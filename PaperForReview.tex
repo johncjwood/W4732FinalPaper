@@ -58,27 +58,27 @@ Columbia University
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for recovering a speaker's words from video / visual-only data, the reproductions of voice have been lacking in reproducing qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these quantitatively derived qualities from the visual data, to see which ones can be recovered or not.
+   Whereas there have been many successful and well-studied methodologies, symbolic representations, and processes for recovering a speaker's words from video / visual-only data, the reproductions of voice have been lacking in reproducing qualities of voice such as pitch, intensity, shimmer, jitter, and harmonics. We have worked towards building a corpus and model to attempt to recover these quantitatively derived qualities from the visual data, to see which ones can be recovered or not. Unfortunately, we were unable to produce any models effective at predicting these qualities of voice despite a variety of attempts.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 \label{sec:intro}
 
-There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for human consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information.
+There have been no shortages of papers and processes for distilling spoken words from visual-only data sources, i.e. performing lip reading. Fenghour \etal 2021 \cite{Fenghour2021} does a thorough job reviewing the corpora, pre-processing techniques, neural network architectures, and results of these processes. Ultimately, the target goal is to produce understandable words / sentences for human consumption. However, there are many other complexities to human vocal communication which these methods are not trained to reproduce. As a simple example, a rising pitch can suggest if the speaker is posing the statement as a question or topic of discussion versus a fact. After all, as we speak, the qualities of our voice modulate due to changes in emotional state and as we purposefully modulate our voice to convey meaning and context such as excitement, boredom, sarcasm, amongst other information. Therefore, to attempt to recover these vocal qualities to fully represent the intent of the speaker from visual only data, we have worked to build a set of models to predict the pitch, intensity, harmonics, jitter, and shimmer from video-only data.
 
 %-------------------------------------------------------------------------
 \subsection{Motivating Findings}
 
 The work that motivated our initial interest in this particular problem is our observations of attempts to  recreate voice from video data. For instance, while RobustL2S by Sahipjohn \etal 2023 \cite{RobustL2S} does a remarkable job at inferring the words of the speakers with lip reading alone, the pitch and intensity of speaking in the resulting audio recreations can vary from the original data. For independent examination of their results, Sahipjohn \etal 2023 have provided a stellar website presenting their work, which includes examples of the aforementioned phenomenon of acoustic deviances: \href{https://neha-sherin.github.io/RobustL2S/}{https://neha-sherin.github.io/RobustL2S/}.
 
-The goal of this paper is to create an experiment to tease out the quantitatively observable elements of speech and see their relative predictability, both independent and in comparison to a baseline prediction about a speaker's median vocal qualities. 
+The goal of this paper is to create an experiment to tease out the quantitatively observable elements of speech and see their relative predictability, both independent and in comparison to a baseline prediction about a speaker's median vocal qualities.  
 
 %------------------------------------------------------------------------
 \section{Related Work}
 \label{sec:related}
 
-There is a lot of related work across multiple disciplines including prior work involving lip reading automation, emotion detection automation, voice to image generation, and video to voice generation. 
+There is a lot of related work across multiple disciplines including prior work involving lip reading automation, emotion detection automation, voice to image generation, and video to voice generation, that culminated in the means for and hypothesis that we could predict the auditory qualities of speech from video-only input.
 
 %-------------------------------------------------------------------------
 
@@ -97,10 +97,6 @@ On a philosophical note, we are hesitant to proliferate models and methodologies
 \subsection{Lip Reading Automation}
 
 At the time of writing, we feel confident that lip reading automation is a solved problem. While there are many approaches and methodologies (mentioned earlier in Fenghour \etal 2021 \cite{Fenghour2021}) , we find the viseme to be the most compelling fundamental building block (either explicitly or implicitly extracted) from which models can be built. Explored more thoroughly in Fenghour \etal 2023\cite{Fenghour2023}, visemes are the clusters of facial movements which occur when making a particular vocalization / set of vocalizations. For instance, as noted in Jachimski \etal 2017 \cite{Elephant2017} , "elephant juice" and "I love you" involve the same fundamental lip movements, in the same order, to produce. Once the building blocks are gathered, then it is then incumbent on using an LLM or equivalent to weight the relative probabilities of the various potential constructions using the visemes to ultimately provide the most likely words / sentences spoken. Another approach, taking some inspiration directly from the construction of LLMs, is AV-HuBERT by Shi \etal 2022 \cite{AVHuBert}. The fundamental idea here is that one utilizes a hybrid ResNet and Transformer architecture to succeed on a self-supervised fill-in-the-blank tasks on video, resulting in both useful embeddings as well as success at performing lip reading. Due to the efficacy of existing models and methodologies, we felt confident in not pursuing marginal improvements for this particular problem.
-
-\subsection{Video to Voice Generation}
-
-There have been numerous papers and projects which have excelled at performing both lip reading and voice generation. While we mentioned RobustL2S by Sahipjohn \etal \cite{RobustL2S} earlier, there are other cutting-edge papers pushing the boundaries on the problem  
 
 \subsection{Existing Video Corpora}
 
@@ -139,44 +135,56 @@ For our target labels, we chose pitch, intensity, shimmer, jitter, and harmonics
 
 For our video-only source data, we used the moviepy python library to remove the audio, resize the video down to 640x360 resolution, turn this images to greyscale, and to down-sample to 10 frames per second. 
 
+Furthermore, we also created a separate video-only source data using cv2's Haar Cascade for facial recognition, introduced in Viola 2001\cite{HaarCascade2001}.
+
 \subsection{Model Construction}
 
 We created a plurality of different model architectures, with our original model consisting of 3 sets of 3D convolutions, and 3 linear layers. Furthermore, each convolutional layer featured a post-convolution BatchNorm, LeakyReLu, and MaxPool. We, in particular, sought out the 3D convolutional neural networks, first introduced by Ji \etal 2012 \cite{Ji3DConv}, as we intended to use video data with a temporal dimension and wanted our convolutions to have the opportunity to seek patterns over length, width, and time.  
 
 However, as our model training continuously converged onto producing a constant output irrelevant of the input video frames, we tried a series of changes including tweaking the hyper-parameters, changing the activation functions,  reducing layers, scaling the inputs and outputs, and even removing convolutional layers altogether and using stacks of linear layers. 
 
+\subsection{Model Evaluation}
+
+There were a few different modalities that we planned to test the hypothesis that we could predict the audio qualities. The first would be a simple observation that the model was training by the loss decreasing over time and being able to extract an accuracy from the train and test sets. The second planned evaluation would be a correlation and r squared between the median value (the first item predicted in the target output) and the actual median for a speaker. While we were not as interested in this result, prior work suggested the possibility of achieving some accuracy. Finally, we also took the slope of the labels as well as the predicted labels and took a correlation and r squared of the two. This was the indicator we were most excited for, as it would show that, irrelevant of the absolute values predicted, that we could predict the relative ups and downs of a speaker's speech based on the video-only input.
+
 %------------------------------------------------------------------------
 \section{Experimental Results}
 \label{sec:results}
 %-------------------------------------------------------------------------
 
-We ran 5 different experiments for each of the key audio qualities of voice. Furthermore, we ran and re-ran the pitch experiment with multiple variations of the model (described earlier) in an attempt to potentially get any predictability out of the model. Unfortunately, in all cases, the model outputs converged towards the mean value for the population of speakers. This was suggestive to us of the input video data being insufficiently predictive, given that the Bayes Optimal Classifier will consistently predict the mean of a dataset, i.e. the expected value of the prior probability times the values, if the input data i.e. the probability of event B is independent of the probability of A.
+We ran 5 different experiments for each of the key audio qualities of voice, passing the entirety of . Furthermore, we ran and re-ran the pitch experiment with multiple variations of the model (described earlier) in an attempt to potentially get any predictability out of the model. Finally, we also filtered the data down to the face-only pixels to attempt to reduce the computations per epoch and increase the epochs into the 100s. Unfortunately, in all cases, the model outputs converged towards producing constant output independent of the input frames / pixels. This was suggestive to us of the input video data being insufficiently predictive, given that the Bayes Optimal Classifier will consistently predict the mean of a dataset, i.e. the expected value of the prior probability times the values, if the input data i.e. the probability of event B is independent of the probability of A.
 
 This was a highly surprising result for us. At the very least, we expected that there would be some, potentially unfortunate but viable route that the model might take to discriminate between our video input to develop its outputs. For instance, one (unfortunate but biologically sound) methodology to create two potential internal representations to then use in predictions for pitch might be for the model to discern male from female speakers. On average, male speakers have pitches between 85 to 155Hz, whereas female speakers have pitches between 165 to 255Hz\cite{Fitch1970}. In theory, if the model were to learn to differentiate males from females on the podcast, then it might be able to make a differentiated prediction.
 
-In contrast, we will admit that we were not extremely confident that we would find a pattern for vocal intensity, so the lack of a performing model is not too surprising. This is because post-processing specifically targeting normalizing the intensity of sound from a speaker, both buffing their quiet communications and softening their louder moments (for both listener comfort and ear drum protection) is fairly common and, on some platforms, performed automatically / as a matter of policy. 
+In contrast, we will admit that we were not extremely confident that we would find a pattern for vocal intensity, so the lack of a performing model is not too surprising. This is because post-processing specifically targeting normalizing the intensity of sound from a speaker, both buffing their quiet communications and softening their louder moments (for both listener comfort and ear drum safety) is fairly common and, on some platforms, performed automatically / as a matter of policy. 
+
+
 
 %------------------------------------------------------------------------
 \section{Discussion}
 \label{sec:discussion}
 
-Here's where we discuss further
+On further consideration of the lack of results from our original approach, we propose a few alterations which may be conducive to generating greater success in our goal.
 
-%-------------------------------------------------------------------------
-\subsection{Discussion Topic}
+The first would be to create stacked learning models, which can learn on independent aspects of the machine vision problem and then to assemble those independent aspects into a larger ensemble model. For instance, we could have one sub-model which focuses on face detection and uses only the face pixels to produce an interim prediction, such as emotion. Another sub-model could focus on the relative location of the microphone and the speaker, iterative calculating the distance between the two. Another sub-model could concentrate on producing the wire-frame of the subject, to use as a indicator of their their body language and if they are taking more aggressive or defensive postures. Essentially, we may have been too overconfident in what the 3d convolutions could achieve independent of further guidance and refinement of the problem space.
 
-Some words here
+Additionally, we underestimated the time and resources required to train a sufficient 3D convolutional neural network with video data. Some variations of the models were taking about 20 hours to train per epoch with a pytorch model size of 1GB. To shorten training time, we cut the amount of parameters drastically which could have resulted in less complexity for the models to truly learn the nuances of audio features. If time permitted, we would have hoped to train many more epochs to increase the probability we would latch onto useful parameters. Resource restrictions also forced us to convert our videos to 640x360 resolution with 10 frames per second and grayscale. This allowed for the input size of the model to be smaller, but it also limited the information being accessible from the video segments
+
+The audio and video clips captured ranged between 1-4 seconds and it is possible that this would not be a sufficient amount of time to accurately predict meaningful variations in vocal qualities, especially considering the dynamic nature of human speech the diversity of emotions expressed during longer conversations. Conversely, it could be possible that a longer interval produces unnecessary noise. So if we were to repeat the project, the duration of clips would be worth experimenting with. 
+
+Finally, based on the existing corpora and their scope, I think it would be worthwhile to consider further development of the Joe Rogan Experience corpus. Because the corpus brings a cornucopia of individuals from around the globe, elicits a diversity of emotions from those speakers, and contains a multitude of natural speaker scenarios (such as 3 or more concurrent guests which, on occasion, talk over each other), I think there is promise in further developing in the dataset by expanding the scope of episodes, providing demographic data about the guests, and providing some methodology to consistently identify Joe Rogan, Brian Redban, and Young Jaime, which would help, by exclusion, to remove their utterances in a consistent manner. 
 
 %------------------------------------------------------------------------
 \section{Conclusion}
 \label{sec:conclusion}
 
-Some words here
+In conclusion, the task of generating vocal qualities solely from video using neural networks has highlighted both challenges and potential future experiments. After creating our own corpus from 400 episodes of Joe Rogan Podcasts and redesigning various convolutional architectures, the models were unable to predict audio characteristics such as pitch, intensity, jitter, shimmer, and harmonics. The lack of learning from the models suggest that the mapping between visual cues and audio is more complicated than initially predicted.
 
+While our approach did not produce desired outcomes, I believe that we still developed a solid foundation (in terms of data and processing code) on which to build upon. Future methods could experiment with more advanced ensemble learning models, additional pre-processing steps, and more advanced hardware to sufficiently train the complicated networks. 
+
+Despite the challenges encountered, recreating the subtleties of human voice from visual-only input does still seem plausible. As technology advances and new methods are discovered, this hard task will likely progress. Benefits from the research will help advance various applications like crime-catching software, disability assistance for the deaf, language translation, and overall communication platforms. 
 %-------------------------------------------------------------------------
-\subsection{Concluding point 1}
 
-Some words here
 
 
 %------------------------------------------------------------------------
@@ -188,9 +196,11 @@ Some words here
     \item Initial idea to attempt to look into errors in modern video-to-audio methods
     \item Setup of original repositories on GitHub for both our code as well as our work in \LaTeX 
     \item Idea and code to download and develop a novel Joe Rogan-based dataset to allow for more likely collection of baseline audio data (due to 2+ hours of data per speaker)
-    \item Code to extract the WAV / target audio data that we are using as our labels in our model
-    \item Functional survey of code to perform speaker diarization (required 3 iterations until we found Pyannote.Audio)
+    \item Code to extract the WAV / target audio data that we used as our labels in our model
+    \item Functional survey of code to perform speaker diarization (implemented and reviewed 3 different solutions until we found Pyannote.Audio)
+    \item Coding, processing, and model training of the facial data only variant (with Haar Cascade) of the 3D CNN-based model 
     \item A plurality of the writing of the final paper including finding relevant papers to quote,  survey of other popular approaches and tools, enumeration of our methodologies and outcomes
+    \item Created the deck and recorded / edited the video for the April 26th presentation
 \end{itemize}
 
 
@@ -202,6 +212,7 @@ Some words here
     \item Creating Training and Test Dataset and Data loader classes in PyTorch
     \item Idea and code on what model layers to use and research into why
     \item Training all 5 models across multiple epochs and fine tuning the architecture
+    \item Wrote the majority of the discussion and conclusion sections of the paper
 \end{itemize}
 
 
